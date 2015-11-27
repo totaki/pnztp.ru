@@ -1,0 +1,40 @@
+{% extends "base.htm" %}
+{% block content %}
+<div class="content one-level news">
+  <div class="container">
+    <div class="col-sm-12">
+      <h1>Наши новости</h1>
+    </div>
+{% for row in news_list %}
+    <div class="row">
+      {% for item in row %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="/static/img/empty-1024x1024.png" style="background-image: url(//pnztp.ru/media/{{ item.image }})" alt="Image not found">
+          <div class="caption">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.date }}</p>
+            <p><a href="/news/{{ item.id }}/">Узнать больше</a></p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+{% endfor %}
+    <div class="col-sm-12">
+      <nav>
+        <ul class="pager">
+          {% if pages.prev %}
+          <li class="previous"><a class="btn-orange" href="/news/page/{{ pages.prev }}/"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a></li>
+          {% endif %}
+          {% if pages.next %}
+          <li class="next"><a class="btn-orange"  href="/news/page/{{ pages.next }}/"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script-footer %}
+{% endblock %}

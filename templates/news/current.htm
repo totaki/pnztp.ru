@@ -1,0 +1,134 @@
+{% extends "base.htm" %}
+{% block content %}
+<div class="content one-level news-current">
+  <div class="container">
+    
+  <div class="col-sm-12">
+    <h1>{{ record.title }}</h1>
+  </div>
+  <div class="col-sm-12">
+    <img src="//pnztp.ru/media/{{ record.image }}" alt="Image must been here" class="img-rounded">
+  </div>
+
+  <div class="col-sm-12">
+    {% autoescape off %}
+    <p>{{ record.description }}</p>
+    {% endautoescape %}
+  </div>
+
+  {% for j in images %}
+  {% if j %}
+    {% for k in j %}
+    <div class="col-sm-4">
+      <img src="//pnztp.ru/media/{{ k.1 }}" alt="Image must been here" class="img-rounded">
+    </div>
+    {% endfor %}
+  {% endif %}
+  {% endfor %}
+
+    <div class="row">
+    </div>
+    
+    <div class="partners">
+      <h2>Другие новости: </h2>
+    </div>
+    <div class="col-sm-12" style="text-align: center;">
+      <a href="/news/page/{{ page }}/">
+        <button class="btn btn-large btn-orange btn-lg">Назад</button>
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block script-footer %}
+<script>
+      function createWithClasses(str, arr) {
+        var elem = document.createElement(str);
+        for (var i=0; i < arr.length; i++) {
+          elem.classList.add(arr[i]);
+        }
+        return elem;
+      }
+      
+      function createWithAttrs(str, obj) {
+        var elem = document.createElement(str);
+        for (var i in obj) {
+          elem.setAttribute(i, obj[i]);
+        }
+        return elem;
+      }
+      
+      function setInner(elem, strInner) {
+        elem.innerHTML = strInner;
+        return elem;
+      }
+
+      function createLink(link, title) {
+        return setInner(createWithAttrs("a", {"href": link}), title);
+      }
+
+      function backImageUrl(str) {
+        return "url(\"" + str + "\")";
+      }
+
+      function createImage(backImage, site) {
+        var emptyImage = "/static/img/empty-400x400.png";
+        var elem = createWithAttrs("img", {"src": emptyImage});
+        if (backImage.substring(0,4) === "http" || backImage.substring(0,2) === "//") {
+          elem.style.backgroundImage = backImageUrl(backImage);
+        } else {
+          elem.style.backgroundImage = backImageUrl("//" + site + backImage);
+        }
+        return elem;
+      }
+      
+      function appendChilds(elem, childs) {
+        for (var i=0; i < childs.length; i++) {
+          elem.appendChild(childs[i]);
+        }
+        return elem;
+      }
+
+      function createPartnerNews(site, data) {
+        if (!data) { return }
+        var elem = createWithClasses("div", ["row"]);
+        appendChilds(elem, 
+          [appendChilds(createWithClasses("div", ["col-sm-3"]),
+            [createImage(data[1], site)
+            ]),
+           appendChilds(createWithClasses("div", ["col-sm-9"]),
+            [createLink("//" + site, site),
+             setInner(document.createElement("h4"), data[0]),
+             createLink("//" + site + data[3], data[2]),
+             setInner(document.createElement("p"), data[4] || "")
+            ])
+          ]
+        );
+        return elem;
+      }
+
+      function setPartnersNews(data) {
+        var sites = ["pnzreg.ru", "inno-terra.ru", "biznes-penza.ru"];
+        var baseElement = document.getElementsByClassName("partners")[0];
+        var child;
+        for (var i=0; i < sites.length; i++) {
+          child = createPartnerNews(sites[i], data[sites[i]])
+          if (child) { baseElement.appendChild(child); }
+        }
+      };
+      
+      function getPartnersNews() {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange=function() {
+          if (req.readyState==4 && req.status==200) {
+            setPartnersNews(JSON.parse(req.responseText));
+          }
+        }
+        req.open("GET", "/news/partners/", true);
+        req.send();
+      }
+
+      getPartnersNews();
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.htm" %}
+{% block content %}
+<div class="content one-level anns">
+  <div class="container">
+    <div class="col-sm-12">
+      <h1>Анонсы событий</h1>
+    </div>
+    {% if announces %}
+      {% for i in announces %}
+      <div id="ann-{{ i.id }}" class="col-sm-12">
+        <h1><span>{{ i.start_date }}</span> {{ i.title }}</h1>
+          <div><p>{% autoescape off %}{{ i.description }}{% endautoescape %}</p></div>
+        </div>
+      {% endfor %}
+    {% else %}
+    <div class="col-sm-12"><h2>На данный момент событий нет.</h2></div>
+    {% endif %}
+{% endblock %}
+{% block script-footer %}
+{% endblock %}

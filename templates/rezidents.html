@@ -1,0 +1,63 @@
+{% extends "info.html" %}
+{% block description %}{{ curent.sketch }}{% endblock %}
+{% block title %}{{ curent.title }}{% endblock %}
+{% block style_curent %}
+div#modal-image img {
+  max-width: 100%;
+}
+.modal-header {
+  border-bottom: 0px;
+}
+#modal-image {
+  text-align:center;
+}
+@media (min-width: 992px) {
+  .modal-dialog {
+    width: 50%
+  }
+}
+{% endblock %}
+{% block right-sidebar %}
+{% for i in sidebar %}
+  <li {% if curent.id == i.1 %}class="active"{% endif %}><a href="/rez/{{ i.1 }}">{{ i.0 }}</a></li>
+{% endfor %}
+{% endblock %}
+{% block curent-content %}
+  <img src = "/media/{{ curent.image }}" style = "max-width: 100%; padding-bottom: 10px;"/>
+  {% autoescape off %}{{ curent.description }}{% endautoescape %}
+  {% for j in images %}
+    {% if j %}
+    <div class="row">
+      {% for k in j %}
+      <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+      <a id = "image_{{ k.0 }}" class="thumbnail" onclick = "get_image({{ k.0 }})">
+        <img src="/media/{{ k.1 }}" alt="...">
+      </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+{% block modal %}
+    <div class="modal fade" id="ImageModal" tabindex="-1" role="dialog" aria-labelledby="ImageModalLabel" aria-hidden="true">
+      <div class="modal-dialog center-block">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          </div>
+          <div  class="modal-body">
+            <div id="modal-image" class = "row">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<script type="text/javascript">
+function get_image(image_id) {
+  image = document.getElementById("image_" + image_id).innerHTML;
+  document.getElementById("modal-image").innerHTML = image; 
+  $("#ImageModal").modal("show");
+}
+</script>
+{% endblock %}

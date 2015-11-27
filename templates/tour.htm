@@ -1,0 +1,285 @@
+{% extends "base.htm" %}
+{% block content %}
+<div class="content one-level">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3">
+        <h1>На экскурсии вы сможете познакомиться с историей создания, назначением и инфраструктурой технопарка. Для понимания необходимы базовые знания школьного курса физики, химии, информатики. <span>16+</span></h1>
+      </div>
+    </div>
+    <form role="form" class = "col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3">
+        <div class="form-group">
+          <label for="input-org">Название организации*</label>
+          <input type="text" class="form-control" id="input-org" placeholder="Организация">
+          <p class="help-block"></p>
+        </div>
+        <div class="form-group row">
+          <label for="input-date">Дата проведения*</label>
+          <div clas="row">
+          {% for i in calendar %}
+            <div class="col-xs-12 col-sm-6 col-md-6 calendar">
+              <h4>{{ i.month.0 }}</h4>
+              {% for offset in i.offset %}<div class="offset">
+              </div>{% endfor %}{% for week in i.weeks %}{% for day in week %}{% if day.1 %}
+                <div class="working">
+                  <input type="radio" name="date" value="{{ i.month.1 }}.{{ day.0 }}" id="d{{ i.month.1 }}-{{ day.0 }}">
+                  <label for="d{{ i.month.1 }}-{{ day.0 }}">{{ day.0 }}</label>
+                {% else %}<div>{{ day.0 }}{% endif %}</div>{% endfor %}{% endfor %}
+            </div>{% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="input-time">Время проведения*</label>
+          <select class="form-control" id = "input-time">
+            {% for i in time %}
+            <option value = "{{ i }}">{{ i }}:00</option>
+            {% endfor %}
+          </select>
+          <p class="help-block"></p>
+        </div>
+        <div class="form-group">
+          <label for="input-clients">Ориентировачное кол-во человек* </label>
+          <select class="form-control" id = "input-clients">
+            <option value = "<10">< 10</option>
+            <option value = "10-20">10-20</option>
+            <option value = "20-30">20-30</option>
+            <option value = "30-40">30-40</option>
+            <option value = "40-50">40-50</option>
+          </select>
+          <p class="help-block"></p>
+        </div>
+        <div class="form-group">
+          <label for="">ОТВЕТСТВЕННОЕ ЛИЦО</label>
+        </div>
+        <div class="form-group">
+          <label for="">Имя*</label>
+          <input type="text" class="form-control" id="input-fname" placeholder="Имя">
+        </div>
+        <div class="form-group" >
+          <label for="">Фамилия*</label>
+          <input type="text" class="form-control" id="input-lname" placeholder="Фамилия">
+        </div>
+        <div class="form-group">
+          <label for="">Телефон*</label>
+          <input type="text" class="form-control" id="input-tele" placeholder="(XXX)XXX-XX-XX">
+          <p class="help-block">Телефон вводится в десятизначном формате</p>
+        </div>
+        <div class="form-group">
+          <label for="">Email*</label>
+          <input type="text" class="form-control" id="input-email" placeholder="Email">
+          <p class="help-block"></p>
+        </div> 
+        </br>
+        <div class="form-group">
+            <img src = "{{ captcha.url }}" id = "captcha-img"/>
+          </br>
+          <label for="">Введите код с картинки*</label>
+          <input type="text" class="form-control col-lg-3 col-md-3 col-sm-5 col-xs-7" id="input-captcha" >
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="check-accept" onclick = "check_checkbox(formFlag());"> Я даю согласие на хранение, обработку и передачу по незащищенным каналам связи персоналных данных. 
+        </div>
+    </form>
+    <div class = "col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-10 col-sm-offset-1">
+      <button id = "btn-submit" class="btn btn-orange" disabled onclick = "sendFormData();">Отправить заявку</button>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" data-backdrop="false" style="background: rgba(0,0,0,.5)">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <p>Ваше заявку принята. В течении недели вам будет отправлено подтверждение на почту. Через <span class="counter">10</span> секунд
+        вы будете перенаправлены на главную старницу</p>
+      </div>
+      <div class="modal-footer">
+        <a href="//pnztp.ru"><button type="button" class="btn btn-orange">Перейти</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script-footer %}
+<script>
+  
+      function formFlag() {
+        var inputs = {
+          'input-org': false,
+          'input-date': false,
+          'input-time': true,
+          'input-clients': true,
+          'input-fname': false,
+          'input-lname': false,
+          'input-tele': false,
+          'input-email': false,
+          'input-captcha': true,
+          'captcha-id': '{{ captcha.id }}',
+          'captcha': '{{ captcha.captcha }}'
+        }
+        return function(id, status) {
+          if (arguments.length === 2) {
+            inputs[id] = status;
+          }
+          var status = true;
+          
+          inputs['input-time'] = document.getElementById('input-time').value;
+          inputs['input-clients'] = document.getElementById('input-clients').value;
+          inputs['input-captcha'] = document.getElementById('input-captcha').value;
+
+          for (var input in inputs) {
+            status = status && inputs[input];
+          }
+          if (!status) {
+            return false;
+          } else {
+            return inputs
+          }
+        }
+      }
+      var formFlag = formFlag();
+  
+      function sendFormData() {
+        var req = new XMLHttpRequest();
+        var inputs = formFlag();
+        var form = '';
+        for (var i in inputs) {
+          form = form + i + '=' + inputs[i] + '&'
+        }
+        req.onreadystatechange = function() {
+          if (req.readyState == 4 && req.status == 200) {
+            var response = JSON.parse(req.responseText);
+            if (response.captcha) {
+              Counter.startCounter();
+            } else {
+              getNewCaptcha();
+            }
+          }
+        }
+        req.open("POST", ".", true);
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.send(form);
+      }
+
+      function checkValue(key, val) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+          if (req.readyState == 4 && req.status == 200) {
+            var response = JSON.parse(req.responseText);
+            checkStatus(key, response[key.slice(6)])
+          }
+        }
+        req.open("POST", ".", true);
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.send("" + key + "=" + val);
+      }
+  
+      function getNewCaptcha() {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+          if (req.readyState == 4 && req.status == 200) {
+            var response = JSON.parse(req.responseText);
+            formFlag().captcha = response.captcha;
+            formFlag()['captcha-id'] = response['id'];
+            document.getElementById('captcha-img').setAttribute('src', response.url);
+            document.getElementById('input-captcha').value = '';
+          }
+        }
+        req.open("GET", "/captcha", true);
+        req.send();
+      }
+
+      function addOninputEvents() {
+        var elems = document.getElementsByClassName("form-control");
+        for (var i=0; i < elems.length; i++) {
+          elems[i].oninput = function () {
+            checkValue(document.activeElement.id, document.activeElement.value)
+          }
+        }
+      }
+      addOninputEvents();
+  
+      function addOnchangeEvents() {
+        var elems = document.getElementsByName("date");
+        for (var i=0; i < elems.length; i++) {
+          elems[i].onchange = function () {
+            for (var i=0; i < elems.length; i++) {
+              if (elems[i].checked) {checkValue('input-date', elems[i].value)}
+            }
+          }
+        }
+      }
+      addOnchangeEvents();
+  
+      function teleOnkeydownEvents() {
+        var elem = document.getElementById("input-tele");
+        var autoValues = { 0:"(", 4: ")", 8: "-", 11: "-"};
+        var reg = /\d/;
+        var availKeys = [8, 9]
+        var maxLength = 14;
+        elem.onkeydown = function (e) {
+          if (!reg.exec(String.fromCharCode(e.keyCode)) && (availKeys.indexOf(e.keyCode) < 0 )) {
+            return false;
+          }
+          
+          if (elem.value.length === maxLength && (availKeys.indexOf(e.keyCode) < 0)) {
+            return false;
+          }
+          
+          if (e.keyCode !== 9) {
+            if ((elem.value.length in autoValues) && e.keyCode !== 8) {
+              elem.value = elem.value + autoValues[elem.value.length];
+            }
+            if (((elem.value.length - 2) in autoValues) && e.keyCode === 8){
+              elem.value = elem.value.slice(0, -1);
+            }
+          }
+        }
+      }
+      teleOnkeydownEvents();
+
+
+      function check_checkbox(flag) {
+        if ( $("#check-accept").is(":checked") && flag) {
+          $("#btn-submit").removeAttr("disabled");
+        }
+        else {
+          $("#btn-submit").attr("disabled","");
+        }
+      }
+
+      function checkStatus(id, status) {
+          check_checkbox(formFlag(id, status));
+          var elem = $("#" + id).parent();
+          if ( !status ) {
+            elem.addClass("has-error");
+          }
+          else if ( status ) {
+            elem.removeClass("has-error");
+          }
+        }
+      
+      var Counter = function() {
+        this.elem = document.getElementsByClassName('counter')[0];
+        this.count = 9;
+      }
+      
+      Counter.prototype.changeCount = function() {
+        Counter.elem.innerHTML = Counter.count;
+        Counter.count--;
+        if (Counter.count === 0) { 
+          clearInterval(Counter.timer); 
+          document.location = "http://pnztp.ru";
+        }
+      }
+
+      Counter.prototype.startCounter = function() {
+        $('#myModal').modal('show');
+        Counter.timer = setInterval(Counter.changeCount, 1000);
+      }
+      
+      var Counter = new Counter();
+      
+    
+</script>
+{% endblock %}

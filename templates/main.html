@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block style_info %}
+.jumbotron .ann{
+  width: 50%;
+}
+.jumbotron news {
+  margin-bottom: 0px; 
+  padding-bottom: 0px;
+}
+.bckcolor-main {
+  background-color: #EEEEEE;
+}
+.h2-info {
+  background-color: #428bca;
+  color: #ffffff; 
+  padding: 10px; 
+  border-radius: 8px;
+}
+{% endblock %}
+{% block content %}
+  {% if ann %}
+  <div style = "background-color: #5cb85c">
+    <div class="container" >
+      <div class = "row">
+        <div class="jumbotron" style = "background-color: #5cb85c;text-align: center;">
+           <h2><span class="label label-danger">{{ ann.start_date }}</span></h2>
+           <h1 style = "color: #FFFFFF">{{ ann.title }} <a href = "/ann/{{ ann.id }}"type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></a></h1>
+           <a href="/ann/" type="button" class="btn btn-danger btn-lg">Посмотреть все анонсы</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class = "bckcolor-main">
+	  <div class="container" >
+  	  <div class = "row">
+        <div class="jumbotron news" >
+          <h1>НОВОСТИ</h1>
+          <h2><small> {{ news.date }} </small>{{ news.title }} <a type="button" href = "/news/{{ news.date.year }}/{{ news.id }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></a></h2>
+          <img style = " width: 100%;" class="img-rounded" src = "/media/{{ news.image }}" />
+        </div>
+      </div>
+      <div class = "row">
+        <div class="jumbotron col-lg-6 col-md-6">
+          <h2 class = "h2-info"><span class="glyphicon glyphicon-user"></span> Наши резиденты</h2>
+          <h2>{{ rez.title }}</h2>
+          <img style = "max-width: 100%;" class="img-rounded" src = "/media/{{ rez.image }}" />
+          <p>{{ rez.sketch }}</p>
+          <p><a type="button" href = "/rez/{{ rez.id }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></a></p>
+        </div>
+        <div class="jumbotron col-lg-6 col-md-6">
+          <h2 class = "h2-info"><span class="glyphicon glyphicon-home"></span> Инфраструктура</h2>
+          <h2>{{ infr.title }}</h2>
+          <img style = "max- width: 100%;" class="img-rounded" src = "/media/{{ infr.image }}" />
+          <p>{{ infr.sketch }}</p>
+          <p><a type="button" href = "/infr/{{ infr.id }}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+    {% block footer-div %}
+    <div class = "bckcolor-main">{% endblock %} 

@@ -1,0 +1,156 @@
+{% extends "base.htm" %}
+{% block header-footer %}
+<div class="carousel-wrapper">
+  <div id="carousel-announce" class="carousel slide" data-ride="carousel">
+    {% if announces %}
+    <ol class="carousel-indicators">
+      {% for i in announces_count %}
+      <li data-target="#carousel-announce" data-slide-to="{{ i }}" {% if i == 0 %}class="active"{% endif %}></li>
+      {% endfor %}
+    </ol>
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <div class="carousel-caption">
+          <h3 class="ann-date"><strong>{{ announces.first.start_date }}</strong></h3>
+          <h3>{{ announces.first.title }}</h3>
+          <a href="/announces/#ann-{{ announces.first.id }}"><p>Подробнее</p></a>
+        </div>
+      </div>
+      {% for i in announces|slice:"1:" %}
+      <div class="item">
+        <div class="carousel-caption">
+          <h3 class="ann-date"><strong>{{ i.start_date }}</strong></h3>
+          <h3>{{ i.title }}</h3>
+          <a href="/announces/#ann-{{ i.id }}"><p>Подробнее</p></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="content first-level">
+  <div class="separator separator-top-left"> 
+    <div></div>
+  </div>
+  <div class="container">
+    <h1>Технопарк "Яблочков" - это комплекс инфраструктуры для поддержки малых инновационных предприятий Пензенской области состоящий из лабораторных, производственных и офисных помещений.</h1>
+  </div>
+  <div class="separator separator-bottom-right"> 
+    <div></div>
+  </div>
+</div>
+
+<div class="content second-level">
+  <div class="container">
+    <iframe src="//www.youtube.com/embed/SL9ik_WKu_8" allowfullscreen="" frameborder="0" height="400" width="100%"></iframe>
+  </div>
+</div>
+
+<div class="content third-level">
+  <div class="separator separator-top-right"> 
+    <div></div>
+  </div>
+  <div class="container">
+    <h2>Более подробную информацию вы сможете найти в нашем <a href="/static/pdf/yblochkov-buklet.pdf">буклете</a> или придти лично предварительно заказав <a href="/tour/">экскурсию</a></h2>
+  </div>
+  <div class="separator separator-bottom-left"> 
+    <div></div>
+  </div>
+</div>
+
+<div class="content fourth-level">
+  <h2>Наши новости</h2>
+  <div class="separator separator-top-left"> 
+    <div></div>
+  </div>
+  <div class="container">
+    {% for i in news %}
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <img src="/static/img/empty-1024x1024.png" style="background-image: url(//pnztp.ru/media/{{ i.image }})" alt="Image not found">
+        <div class="caption">
+          <h3>{{ i.title }}</h3>
+          <p>{{ i.date }}</p>
+          <p><a href="/news/{{ i.id }}">Узнать больше</a></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="content fifth-level">
+  <div class="separator separator-top-top"> 
+    <div></div>
+  </div>
+  <div class="container-fluid">
+    <div class="col-md-6">
+      <h3>Мы находимся:<br><a href="http://osm.org/go/2EVE3gvX?layers=TN">г.Пенза, ул.Дружбы, 6</a></h3>
+    </div>
+    <div class="col-md-6">
+      <h3>С нами можно связаться:<br>позвонив по телефону <a href="tel:+7-8412-636-400">+7(8412)636-400</a><br>или написав на почту <a href="mailto:pnztp@mail.ru">pnztp@mail.ru</a></h3>
+    </div>
+  </div>
+</div>
+
+<div class="content sixth-level">
+  <div class="container">
+    <h3>Нас поддерживают:</h3>
+    <div class="col-sm-6 col-md-4">
+      <div class="logo" style="background-image: url(/static/img/penza-height-65.png)"></div>
+      <h4>Правительство Пензенской области</h4>
+      <a href="http://www.pnzreg.ru/">pnzreg.ru</a>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="logo" style="background-image: url(/static/img/inno.png)"></div>
+      <h4>Портал инноваторов Пензенской области</h4>
+      <a href="http://inno-terra.ru/">inno-terra.ru</a>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="logo" style="background-image: url(/static/img/prodi-height-65.png)"></div>
+      <h4>Пензенское региональное объединение бизнес-инкубаторов</h4>
+      <a href="http://biznes-penza.ru/">biznes-penza.ru</a>
+    </div>
+  </div>
+
+  <div class="signature container-fluid"><a href="https://www.facebook.com/sergey.emelyanov.18">Designed by Sergey Emelyanov</a></div>
+</div>
+{% endblock %}
+{% block script-footer %}
+<script>
+function pixelSize(size) {
+  return "" + size + "px";
+}
+
+function setChildBorderWidth(className) {
+  var elements = document.getElementsByClassName(className);
+
+  var baseSizes = {
+    "widthParent": elements[0].offsetWidth,
+    "heightParent": elements[0].offsetHeight,
+  };
+
+  baseSizes["widthFirst"] = baseSizes.widthParent - Math.floor(baseSizes.widthParent/2);
+  baseSizes["heightFirst"] = baseSizes.heightParent - Math.floor(baseSizes.heightParent/2);
+
+  for (i=0; i < elements.length; i++) {
+    var current = document.getElementsByClassName(className)[i].childNodes[1];
+    current.style.borderBottomWidth = pixelSize(baseSizes.heightFirst);
+    current.style.borderLeftWidth = pixelSize(baseSizes.widthFirst);
+    current.style.borderRightWidth = pixelSize(baseSizes.widthParent - baseSizes.widthFirst);
+    current.style.borderTopWidth = pixelSize(baseSizes.heightParent - baseSizes.heightFirst);
+  }
+};
+
+setChildBorderWidth("separator");
+
+function resizeWindow() {
+      setChildBorderWidth("separator");
+}
+
+$(window).on("resize", resizeWindow);
+</script>
+{% endblock %}
